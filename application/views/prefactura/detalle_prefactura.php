@@ -97,7 +97,7 @@
                                             <td> <?php echo $el->MEDIDA1 ?> </td>
                                             <td> <?php echo $el->PRECIO1 ?> </td>
                                             <td> <?php echo $el->CANTIDAD1 ?> </td>
-                                            <td> <?php echo $el->TOTAL1 ?> </td>
+                                            <td> <?php echo round($el->TOTAL1) ?> </td>
                                         </tr>
                 
                                     <?php endforeach ?>
