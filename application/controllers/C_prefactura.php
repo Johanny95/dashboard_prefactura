@@ -115,7 +115,7 @@ class C_prefactura extends FS_Controller {
 					$row['medida1'] 			= $value->MEDIDA1;
 					$row['precio1'] 			= $value->PRECIO1;
 					$row['cantidad1'] 			= $value->CANTIDAD1;
-					$row['total1'] 				= $value->TOTAL1;
+					$row['total1'] 				= round($value->TOTAL1);
 					// $row['doc']					= base_url().$value->DOCUMENTO;
 					// $row['url']					= site_url().'ajustes/ver_ajuste/'.$value->ID_AJUSTE;
 					// $row['creador']					= $value->CREADOR;
