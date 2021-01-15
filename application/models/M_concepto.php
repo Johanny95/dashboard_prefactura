@@ -15,7 +15,7 @@ class M_concepto extends CI_Model {
 
     public function add($elemento){
         $aux = array();
-        $sp = oci_parse($this->db->conn_id, "BEGIN PF_SISTEMA_PREFACTURA.SP_ADD_CONCEPTO(:P_VENDOR_ID,:P_SERVICIO,:P_NOMBRE,:P_CUENTA,:P_PRECIO1,:P_PRECIO2,:P_PRECIO3,:P_MEDIDA1,:P_MEDIDA2,:P_MEDIDA3,:P_URL,:P_CHECK_OC,:P_ID_USUARIO,:P_ESTADO_PROCESO); END;");
+        $sp = oci_parse($this->db->conn_id, "BEGIN PF_SISTEMA_PREFACTURA.SP_ADD_CONCEPTO(:P_VENDOR_ID,:P_SERVICIO,:P_NOMBRE,:P_CUENTA,:P_PRECIO1,:P_PRECIO2,:P_PRECIO3,:P_MEDIDA1,:P_MEDIDA2,:P_MEDIDA3,:P_URL,:P_CHECK_OC,:P_TIPO_PAGO,:P_ID_USUARIO,:P_ESTADO_PROCESO); END;");
         oci_bind_by_name(       $sp, ":P_VENDOR_ID"         ,    $elemento['proveedor']          , 1000);
         oci_bind_by_name(       $sp, ":P_SERVICIO"          ,    $elemento['servicio']           , 1000);
         oci_bind_by_name(       $sp, ":P_NOMBRE"            ,    $elemento['nombre']             , 1000);
@@ -27,7 +27,8 @@ class M_concepto extends CI_Model {
         oci_bind_by_name(       $sp, ":P_MEDIDA2"           ,    $elemento['medida2']            , 1000);
         oci_bind_by_name(       $sp, ":P_MEDIDA3"           ,    $elemento['medida3']            , 1000);
         oci_bind_by_name(       $sp, ":P_URL"               ,    $elemento['url']                , 1000);
-        oci_bind_by_name(       $sp, ":P_CHECK_OC"          ,    $elemento['validacion_oc']                , 1000);
+        oci_bind_by_name(       $sp, ":P_CHECK_OC"          ,    $elemento['validacion_oc']      , 1000);
+        oci_bind_by_name(       $sp, ":P_TIPO_PAGO"         ,    $elemento['tipo_pago']          , 1000);
         oci_bind_by_name(       $sp, ":P_ID_USUARIO"        ,    $elemento['usuario']            , 1000);
         oci_bind_by_name(       $sp, ":P_ESTADO_PROCESO"    ,    $aux[] );
         oci_execute($sp, OCI_DEFAULT);
@@ -150,7 +151,23 @@ class M_concepto extends CI_Model {
         $result = $data;
         return $result;
     }
-    
+
+    public function get_tipos_pago(){
+        $curs = $this->db->get_cursor();
+        $this->db->stored_procedure("PF_SISTEMA_PREFACTURA","SP_GET_TIPOS_PAGO", array
+            (
+                array('name' => ':CUR_USU',         'value' => $curs          , 'type' => OCI_B_CURSOR,'length' => -1)
+            )
+        );
+        oci_execute($curs);
+        $data = array();
+        while (($row = oci_fetch_object($curs)) != false) {
+            $data[] = $row;
+        }
+        oci_free_statement($curs);
+        $result = $data;
+        return $result;
+    }
 
     public function get_cuentas_contables($filtro){
 

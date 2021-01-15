@@ -47,28 +47,34 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-2">
+                    <div class="form-group">
+                        <label>Valor Uf</label>
+                        <input type="text" class="form-control" id="valor_uf" readonly="true" >
+                    </div>
+                </div>
+                <div class="col-xs-2">
                     <div class="form-group">
                         <label for="">Organizaciones</label>
                         <select id='organizacion' name='organizacion' class="form-control selectpicker" multiple data-actions-box="true" data-selected-text-format="count" style="width: 100%">
                         </select>
                     </div>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-2">
                     <div class="form-group">
                         <label for="">Proveedores</label>
                         <select id='proveedores' name='proveedores' class="form-control selectpicker" multiple data-actions-box="true" data-selected-text-format="count" style="width: 100%">
                         </select>
                     </div>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-2">
                     <div class="form-group">
                         <label for="">Servicios</label>
                         <select id='servicios' name='servicios' class="form-control selectpicker" multiple data-actions-box="true" data-selected-text-format="count" style="width: 100%">
                         </select>
                     </div>
                 </div>
-                <div class="col-xs-1">
+                <div class="col-xs-2">
                     <div class="form-group">
                         <label>Buscar</label>
                         <button id="bt_buscar" type="button" class="btn btn-block btn-primary"><i class="fa fa-search"></i></button>
@@ -146,6 +152,15 @@
 
 
     <script type="text/javascript">
+
+        function cargar_valor_uf(periodo){
+            $.post("<?php echo site_url('apertura/get_apertura_mes') ?>", {'periodo': periodo}, function(data, textStatus, xhr) {
+                 $('#valor_uf').val( data.periodo[0].VALOR_UF );
+                console.log( data.periodo[0].VALOR_UF );
+            },'json');
+
+        }
+
         $(function(){
             var usuid = <?php echo $this->session->usuid?>;
             cargar_select_org(usuid);
@@ -153,11 +168,11 @@
             cargar_select_proveedor();
 
             cargar_select_servicios();
+            cargar_valor_uf($('#fecha').val());
 
             $('#bt_buscar').on('click',function(){
                 $('#box_body').removeClass('hide').addClass('show');
                 // $('#div_guardar').removeClass('hide').addClass('show');
-                
                 table.ajax.reload();
             });
 
@@ -176,6 +191,7 @@
             $('body').on('change','#fecha',function(){
                 // $('#box_body').removeClass('show').addClass('hide');
                 $('#div_guardar').removeClass('show').addClass('hide');
+                cargar_valor_uf($('#fecha').val());
             });
 
             $('body').on('change','#servicios',function(){
@@ -308,7 +324,7 @@
                 {data : "servicio"      ,"className": "text-left"   },
                 {data : "concepto"      ,"className": "text-left"   },
                 {data : "medida1"       ,"className": "text-left"   },
-                {data : "precio1"       ,"className": "text-right" , "render": $.fn.dataTable.render.number( '.', ',', 0 ,'$ ' )  },
+                {data : "precio1"       ,"className": "text-right"  },
                 {data : "cantidad1"     ,"className": "text-right"   },
                 {data : "total1"        ,"className": "text-right"  ,"render": $.fn.dataTable.render.number( '.', ',', 0 )  }
                 // {data : "doc","className": "text-center"},
@@ -324,8 +340,14 @@
                     "targets" : 'no-sort', orderable : false 
                 },
                 ],
+                 "createdRow": function (row,data,index){
+                    $('td',row).eq(6).empty();
+                    $('td',row).eq(6).append('<i class="left">$</i> '+data.precio1+' '+data.tipo_pago);
+
+                },
                 "footerCallback": function ( row, data, start, end, display ) {
 
+                  
                     var api = this.api(), data;
                     var $i = 0;
                     var intVal = function ( i ) {

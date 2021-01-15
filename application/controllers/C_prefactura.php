@@ -78,7 +78,7 @@ class C_prefactura extends FS_Controller {
 		// var_dump ($this->input->post());
 		// die();
 		$data = array();
-		if ($this->input->is_ajax_request()) {
+		if ($this->input->is_ajax_request()) { 
 
 			$proveedores 	= ( $this->input->post('proveedores')  ? $this->input->post('proveedores') : array(0) );
 			$result 		= $this->m_prefactura->get_servicios_pro($proveedores);
@@ -115,7 +115,8 @@ class C_prefactura extends FS_Controller {
 					$row['medida1'] 			= $value->MEDIDA1;
 					$row['precio1'] 			= $value->PRECIO1;
 					$row['cantidad1'] 			= $value->CANTIDAD1;
-					$row['total1'] 				= $value->TOTAL1;
+					$row['tipo_pago'] 			= $value->TIPO_PAGO;
+					$row['total1'] 				= round($value->TOTAL1);
 					// $row['doc']					= base_url().$value->DOCUMENTO;
 					// $row['url']					= site_url().'ajustes/ver_ajuste/'.$value->ID_AJUSTE;
 					// $row['creador']					= $value->CREADOR;
@@ -293,7 +294,6 @@ class C_prefactura extends FS_Controller {
 			$this->output->set_content_type('application/json')->set_output(json_encode($this->data));
 		}
 	}
-
 
 }
 

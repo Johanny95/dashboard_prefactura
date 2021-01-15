@@ -66,8 +66,9 @@
                             <th>Proveedor</th>
                             <!-- <th>Estado</th> -->
                             <th>Fecha Creacion</th>
-                            <th class="no-sort text-center">Documento</th>
-                            <th class="no-sort text-center">Visualizar</th>
+                            <th width="50px" class="no-sort text-center">Documento</th>
+                            <th width="50px" class="no-sort text-center">Visualizar</th>
+                            <!-- <th width="50px" class="no-sort text-center">Eliminar</th> -->
                             <!-- <th width="50px" class="no-sort text-center">Editar</th>
                                 <th width="50px" class="no-sort text-center">Eliminar</th> -->
                             </thead>
@@ -85,12 +86,41 @@
                 </div>
             </div>
         </div>
+
+
+
+        <div class="modal  fade" id="modal_eliminar" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form  id="form_eliminar" action="<?php echo site_url('evento/eliminar')?>" method="get" accept-charset="utf-8">
+                    <div class="modal-header bg-red">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title"><i class="fa fa-question-circle margin-right-5"></i> <span>Eliminar evento</strong></h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Esta realizando la eliminacion de un evento, ¿Desea continuar?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn  pull-left" data-dismiss="modal"><strong>Cancelar</strong></button>
+
+                            <button type="button" id="bt_confirmacion_del" class="btn btn-primary pull-right"><strong>Aceptar</strong></button>    
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
     </section>
 
 
     <script type="text/javascript">
         $(function(){
             var usuid = <?php echo $this->session->usuid?>;
+            var id ;
             cargar_select_org(usuid);
 
             $('body').on('change','#organizacion',function(){
@@ -108,6 +138,28 @@
                 viewMode: "months", 
                 minViewMode: "months"
             });
+
+            $('body').on('click','.bt_del',function(){
+                id = $(this).data('id');
+                $('#modal_eliminar').modal('show');
+            });
+
+            $('body').on('click','#bt_confirmacion_del',function(e){
+
+                $.post("<?php echo site_url('evento/eliminar')?>", {id_evento : id} , function(data) {
+                    // console.log(data);
+                    if (data.estado) {
+                        pf_notify('Eliminación', 'Operación realizada correctamente' , 'success' ,'fa fa-commenting-o');
+                        $('#modal_eliminar').modal('hide');
+                        table.ajax.reload();
+                        // setTimeout(function(){  location.reload(); }, 1000 );
+                    }else{
+                        pf_notify('Eliminación', 'Ups!, Error al eliminar' , 'danger' ,'fa fa-close');
+                    }
+                },'json');
+
+            });
+
 
         });
 
@@ -161,7 +213,7 @@
                     "url": "<?php echo site_url('eventos/get_eventos')?>",
                     'type': 'POST',
                     "dataSrc":"",
-                    "data": function ( d ) {
+                    "data": function ( d ) { 
                         d.periodo = $("#fecha").val(),
                         d.org     = $("#organizacion").val()
                     }
@@ -174,6 +226,7 @@
                 {data : "fecha_creacion","className": "text-left"},
                 {data : "doc","className": "text-center"},
                 {data : "url","className": "text-center"}
+                // {data : "creador","className": "text-center"}
                 ],
                 "columnDefs": [
                 {
@@ -189,6 +242,15 @@
                     $('td',row).eq(4).append('<button type="button" class="btn btn-info bt_doc" data-url="'+data.doc+'"><i class="fa fa-save"></i></button>');
                     $('td',row).eq(5).empty();
                     $('td',row).eq(5).append('<a data-id="'+data.id_evento+'" href="'+data.url+'" class="btn btn-sm btn-primary"><i class="fa fa-search"></i></a>');
+
+
+                    // var id_session = "<?php echo $this->session->usuid; ?>";
+                    // $('td',row).eq(6).empty();
+                    // console.log(data.estado == 'INGRESADO')
+                    // if( id_session === data.creador && data.estado == 'INGRESADO' ){
+                    //     $('td',row).eq(6).append('<a data-id="'+data.id_evento+'" class="btn bt_del btn-sm btn-danger"><i class="fa fa-trash"></i></a>');
+                    // }
+
                 },
                 "paging": true, 
                 "info": true,

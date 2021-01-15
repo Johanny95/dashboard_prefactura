@@ -112,6 +112,8 @@ $route['concepto/registrar']					= 'C_concepto/view_registrar';
 $route['concepto/listado']						= 'C_concepto/view_todo';
 
 $route['concepto/get_medidas']					= 'C_concepto/get_medidas';
+$route['concepto/get_tipos_pago']				= 'C_concepto/get_tipos_pago';
+
 $route['concepto/add']							= 'C_concepto/add';
 
 $route['concepto/get_cuentas_contables']		= 'C_concepto/get_cuentas_contables';
@@ -131,12 +133,16 @@ $route['evento/registrar_evento']				= 'C_eventos/registrar_evento';
 $route['eventos/buscador']						= 'C_eventos/view_todo';
 $route['eventos/ver_evento/(:num)']				= 'C_eventos/ver_evento/$1';
 $route['eventos/get_eventos']					= 'C_eventos/get_eventos';
+$route['evento/eliminar']						= 'C_eventos/del_elemento';
+
 
 
 /*apertura de mes*/
 $route['apertura/mensual']						= 'C_apertura/view_registrar';
 $route['apertura/add']							= 'C_apertura/add';
 $route['apertura/cierre']						= 'C_apertura/cierre';
+$route['apertura/edit']							= 'C_apertura/edit';
+$route['apertura/get_apertura_mes']				= 'C_apertura/get_apertura_mes';
 
 
 

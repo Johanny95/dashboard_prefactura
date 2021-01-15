@@ -13,6 +13,7 @@ class C_apertura extends FS_Controller {
 	{
 		parent::__construct();
 		$this->load->model('M_apertura', 'm_model');
+
 	}
 
 	public function view_todo()
@@ -40,8 +41,13 @@ class C_apertura extends FS_Controller {
 		$this->data[$this->mensaje] = array();
 		if ($this->input->is_ajax_request()) {
             $this->form_validation->set_rules('fecha', 'Periodo', 'trim|required|min_length[3]|max_length[150]');
+            $this->form_validation->set_rules('valor_uf', 'Valor UF', 'trim|required|min_length[3]|max_length[150]');
             if ($this->form_validation->run() == TRUE) {
-            	$validador = $this->m_model->add($this->input->post('fecha'));
+
+            	$elemento = array( 'fecha' => $this->input->post('fecha') ,
+            					   'valor_uf' => $this->input->post('valor_uf') );
+
+            	$validador = $this->m_model->add($elemento);
             	if ( $validador == 1 ){
             		$this->data[$this->estado] = true;
             	}else if ($validador == 2){
@@ -90,12 +96,14 @@ class C_apertura extends FS_Controller {
 		$this->data[$this->estado]  = FALSE;
 		$this->data[$this->mensaje] = array();
     	if ($this->input->is_ajax_request()) {
-            $this->form_validation->set_rules('nombre', 'Nombre', 'trim|required|min_length[3]|max_length[150]|callback_alpha_dash');
+            $this->form_validation->set_rules('periodo_edit', 'Periodo', 'trim|required|min_length[3]|max_length[150]');
+            $this->form_validation->set_rules('valor_uf_edit', 'Valor UF', 'trim|required|min_length[3]|max_length[150]');
     		if ($this->form_validation->run() == TRUE) {
-    			$data                 = new \stdClass();
-    			$data->id             = $this->input->post('id');
-    			$data->nombre         = $this->input->post('nombre');
-    			$this->data[$this->estado] = $this->m_model->upd($data);
+    			$elemento = array(
+    				'periodo' => $this->input->post('periodo_edit'),
+    				'valor_uf' => $this->input->post('valor_uf_edit')
+    			);
+    			$this->data[$this->estado] = $this->m_model->upd($elemento);
     		} else {
     			foreach ($this->input->post() as $key => $value) 
 				{
@@ -109,11 +117,12 @@ class C_apertura extends FS_Controller {
     }
 
 
-    public function get_servicios(){
-		$data['servicios'] = $this->m_model->get();
+    public function get_apertura_mes(){
+        $periodo = $this->input->post('periodo');
+		$data['periodo'] = $this->m_model->get_apertura_mes($periodo);
 		echo json_encode($data);
 	}
-    
+
 
 }
 

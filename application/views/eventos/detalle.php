@@ -1,5 +1,6 @@
 <?php foreach ($evento as $key => $value) {
     $eve = $value;
+    // echo var_dump($eve);
 }?>
 
 
@@ -79,7 +80,18 @@
                     <label>Fecha Creacion</label>
                     <input class="form-control" readonly="true" type="text" value="<?php echo $eve['fecha_creacion']?>">
                 </div>
-            </div>
+            </div> 
+
+            
+                <div class="col-xs-3 hide" id="div_borrar">
+                    <div class="form-group">
+                        <label>Eliminar</label>
+                        <button id="bt_eliminar" class="btn btn-danger btn-block bt_del" data-id="<?php echo $eve['id_evento']?>"><i class="fa fa-trash"></i> Eliminar</button>
+                    </div>
+                </div>    
+            
+
+            
 
 
         </div>
@@ -92,7 +104,7 @@
 
     <?php foreach ($eve['servicios'] as $key => $servicio): ?>
 
-       <div class="box box-primary">
+     <div class="box box-primary">
         <div class="box-header with-border">
             <div class="container-fluid">
                 <div class="col-sm-6">
@@ -102,19 +114,24 @@
         </div>
         <div class="box-body">
             <div class="container-fluid">
-
+                <?php $estado = 1; ?>
                 <?php foreach ($servicio['conceptos'] as $key => $concepto): ?>
 
-                 <div class="row" id="">
+                    <?php if ($concepto['estado_evento'] === 'PROCESADO' || $concepto['estado_evento'] === 'APROBADO' ) : ?>
+                        <?php $estado = 0  ?>
+                        
+                    <?php endif ?>
+                    
+                   <div class="row" id="">
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Concepto</label>
                             <select class="form-control select2" style="width: 100%;" disabled="true">
-                               <option selected="true"><?php echo $concepto['nombre_concepto']?></option>
-                           </select>
-                       </div>
-                   </div>
-                   <div class="col-sm-1">
+                             <option selected="true"><?php echo $concepto['nombre_concepto']?></option>
+                         </select>
+                     </div>
+                 </div>
+                 <div class="col-sm-1">
                     <div class="form-group">
                         <label>Cantidad 1</label>
                         <input  type="text" class="form-control" value="<?php echo $concepto['cantidad1']?>" disabled="true"/>
@@ -167,14 +184,45 @@
 <?php endforeach ?>
 
 
+<div class="modal  fade" id="modal_eliminar" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form  id="form_eliminar" action="<?php echo site_url('evento/eliminar')?>" method="get" accept-charset="utf-8">
+                <div class="modal-header bg-red">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title"><i class="fa fa-question-circle margin-right-5"></i> <span>Eliminar evento</strong></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Esta realizando la eliminacion de un evento, ¿Desea continuar?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn  pull-left" data-dismiss="modal"><strong>Cancelar</strong></button>
 
+                        <button type="button" id="bt_confirmacion_del" class="btn btn-primary pull-right"><strong>Aceptar</strong></button>    
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </section>
 
 <script type="text/javascript">
     $(function(){
-       var estado_file = true;
-       $("body").on('click','.file',function(){
+
+        //
+        if ('<?php echo $estado?>' === '1' &&  '<?php echo $eve["creador"] ?>' === '<?php echo $this->session->usuid?>'  ) {
+            $('#div_borrar').removeClass('hide').addClass('show');
+        } 
+
+
+
+
+     var estado_file = true;
+     $("body").on('click','.file',function(){
         if (estado_file){
             $('.div_file').removeClass('hide').addClass('show');
             estado_file = false;
@@ -183,5 +231,28 @@
             estado_file = true;
         }
     });
-   })
+
+
+     $('body').on('click','.bt_del',function(){
+        id = $(this).data('id');
+        $('#modal_eliminar').modal('show');
+    });
+
+     $('body').on('click','#bt_confirmacion_del',function(e){
+
+        $.post("<?php echo site_url('evento/eliminar')?>", {id_evento : id} , function(data) {
+            // console.log(data);
+            if (data.estado) {
+                pf_notify('Eliminación', 'Operación realizada correctamente' , 'success' ,'fa fa-commenting-o');
+                $('#modal_eliminar').modal('hide');
+                window.history.back();
+                // setTimeout(function(){  location.reload(); }, 1000 );
+            }else{
+                pf_notify('Eliminación', 'Ups!, Error al eliminar' , 'danger' ,'fa fa-close');
+            }
+        },'json');
+
+    });
+
+ });
 </script>

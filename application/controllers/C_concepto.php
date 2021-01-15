@@ -60,9 +60,11 @@ class C_concepto extends FS_Controller {
 			$this->form_validation->set_rules('medida2'			, 'Tipo medida 2'		, 'trim|required');
 			$this->form_validation->set_rules('medida3'			, 'Tipo medida 3'		, 'trim|required');
 			$this->form_validation->set_rules('cta_contable'	, 'Cuenta Contable'		, 'trim|required');
-			$this->form_validation->set_rules('precio1'			, 'Precio 1'			, 'trim|required|min_length[1]|max_length[10]|numeric');
-			$this->form_validation->set_rules('precio2'			, 'Precio 2'			, 'trim|required|min_length[1]|max_length[10]|numeric');
-			$this->form_validation->set_rules('precio3'			, 'Precio 3'			, 'trim|required|min_length[1]|max_length[10]|numeric');
+			$this->form_validation->set_rules('precio1'			, 'Precio 1'			, 'trim|required|min_length[1]|max_length[10]');
+			$this->form_validation->set_rules('precio2'			, 'Precio 2'			, 'trim|required|min_length[1]|max_length[10]');
+			$this->form_validation->set_rules('precio3'			, 'Precio 3'			, 'trim|required|min_length[1]|max_length[10]');
+			$this->form_validation->set_rules('tipo_pago'		, 'Tipo Pago'			, 'trim|required|min_length[1]|max_length[10]');
+
 			if ($this->form_validation->run() == true) {
 				$proveedor 			= $this->input->post('proveedor');
 				$servicio 			= $this->input->post('servicio');
@@ -78,8 +80,10 @@ class C_concepto extends FS_Controller {
 					'medida2'			=> $this->input->post('medida2'),
 					'medida3'			=> $this->input->post('medida3'),
 					'validacion_oc'		=> ($this->input->post('check_oc') ? 'S' : 'N' ),
+					'tipo_pago'			=> $this->input->post('tipo_pago'),
 					'usuario'			=> $this->session->usuid
 				);
+
 				$pathname = "upload/$proveedor/$servicio";
 				if (!is_dir( $pathname )) {
 					mkdir( $pathname , 0777, true);
@@ -182,9 +186,9 @@ class C_concepto extends FS_Controller {
 			// $this->form_validation->set_rules('medida2'				, 'Tipo medida 2'		, 'trim|required');
 			// $this->form_validation->set_rules('medida3'				, 'Tipo medida 3'		, 'trim|required');
 			$this->form_validation->set_rules('cta_contable'		, 'Cuenta Contable'		, 'trim|required');
-			$this->form_validation->set_rules('precio1'				, 'Precio 1'			, 'trim|required|min_length[1]|max_length[10]|numeric');
-			$this->form_validation->set_rules('precio2'				, 'Precio 2'			, 'trim|required|min_length[1]|max_length[10]|numeric');
-			$this->form_validation->set_rules('precio3'				, 'Precio 3'			, 'trim|required|min_length[1]|max_length[10]|numeric');
+			$this->form_validation->set_rules('precio1'				, 'Precio 1'			, 'trim|required|min_length[1]|max_length[10]');
+			$this->form_validation->set_rules('precio2'				, 'Precio 2'			, 'trim|required|min_length[1]|max_length[10]');
+			$this->form_validation->set_rules('precio3'				, 'Precio 3'			, 'trim|required|min_length[1]|max_length[10]');
 			$this->form_validation->set_rules('fecha_desde'			, 'Fecha desde'			, 'trim|required');
 
 
@@ -276,6 +280,23 @@ class C_concepto extends FS_Controller {
 		$data = array();
 		if ($this->input->is_ajax_request()) {
 			$result 		= $this->m_model->get_medidas();
+			if (!empty($result)) {
+				foreach ($result as $key) {
+					$row = array();
+					$row['id'] = $key->CODIGO;
+					$row['nombre'] = $key->NOMBRE;
+					$data[]  = $row;
+				}	
+			}
+		}
+		$this->output->set_content_type('application/json')->set_output(json_encode($data));	
+	}
+
+	public function get_tipos_pago(){
+		
+		$data = array();
+		if ($this->input->is_ajax_request()) {
+			$result 		= $this->m_model->get_tipos_pago();
 			if (!empty($result)) {
 				foreach ($result as $key) {
 					$row = array();

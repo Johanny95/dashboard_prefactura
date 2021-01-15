@@ -157,7 +157,7 @@ class C_eventos extends FS_Controller {
 			$result 		= $this->m_model->get_conceptos_by_servicio($id_servicio , $id_proveedor);
 			if (!empty($result)) {
 				$data	= $result;
-			}
+			} 
 		}
 		$this->output->set_content_type('application/json')->set_output(json_encode($data));
 	}
@@ -165,13 +165,11 @@ class C_eventos extends FS_Controller {
 	public function get_eventos()
 	{
 		$data 		= array();
-
 		$elemento 	= array(
 						'periodo' 			=> $this->input->post('periodo'),
 						'organizaciones'	=> (($this->input->post('org')) ?  implode(',',$this->input->post('org')) : '0' ),
 						'id_evento'			=> -1
 		);
-
 		if ($this->input->is_ajax_request()) {
 			$get = $this->m_evento->get_eventos($elemento);
 			if (!empty($get)) {
@@ -185,9 +183,20 @@ class C_eventos extends FS_Controller {
 					$row['fecha_creacion'] 		= $value['fecha_creacion'];
 					$row['doc']					= base_url().$value['documento'];
 					$row['url']					= site_url().'eventos/ver_evento/'.$value['id_evento'];
+					$row['creador'] 			= $value['creador'];
 					$data[] = $row;
 				}
 			}
+		}
+		$this->output->set_content_type('application/json')->set_output(json_encode($data));
+	}
+
+	public function del_elemento(){
+		$data = array();
+		if ($this->input->is_ajax_request()) {
+
+			$id_evento 	= $this->input->post('id_evento');
+			$data['estado'] = $this->m_evento->del_evento($id_evento);
 		}
 		$this->output->set_content_type('application/json')->set_output(json_encode($data));
 	}

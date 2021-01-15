@@ -57,8 +57,6 @@ public function upd($data)
     $this->db->set('USUARIO_UPD', $this->usuid);
     $this->db->where('ID_SERVICIO', $data->id, FALSE);
     $this->db->update('PF_FACT_MES_APERTURA');
-
-
     if ($this->db->trans_status() === FALSE)
     {
 
@@ -70,6 +68,18 @@ public function upd($data)
         return true;
     }      
 }
+
+public function del_evento($id_evento){
+    $aux = array();
+    $sp  = oci_parse( $this->db->conn_id, "BEGIN PF_SISTEMA_PREFACTURA.SP_DEL_EVENTOS(:P_ID_EVENTO,:P_ID_USUARIO,:P_ESTADO_PROCESO); END;" );
+    oci_bind_by_name(       $sp, ":P_ID_EVENTO"             ,   $id_evento);
+    oci_bind_by_name(       $sp, ":P_ID_USUARIO"            ,   $this->usuid);
+    oci_bind_by_name(       $sp, ":P_ESTADO_PROCESO"        ,   $aux[]);
+    oci_execute($sp, OCI_DEFAULT);
+    $estado =  (!empty($aux[0])) ? true : false;
+    return $estado;    
+}
+
 
 public function get_eventos($elemento)
 {
@@ -114,10 +124,8 @@ public function get_eventos($elemento)
                 'conceptos'         => array()
             );
         }
-
         // $concepto['rut'] = $p->RUT;
         // $usu['nombre'] = $p->NOMBRES.' '.$p->APELLIDOS;
-
         $concepto['id_concepto']     = $row->ID_CONCEPTO;
         $concepto['nombre_concepto'] = $row->NOMBRE_CONCEPTO;
         $concepto['medida1']         = $row->MEDIDA1;
@@ -126,6 +134,9 @@ public function get_eventos($elemento)
         $concepto['cantidad1']       = $row->CANTIDAD1;
         $concepto['cantidad2']       = $row->CANTIDAD2;
         $concepto['cantidad3']       = $row->CANTIDAD3;
+        $concepto['id_usuario']      = $row->CREADOR;
+        $concepto['estado_evento']      = $row->ESTADO_EVENTO;
+        
 
 
         array_push($eventos[$row->ID_EVENTO]['servicios'][$row->ID_SERVICIO]['conceptos'], $concepto);
@@ -133,14 +144,6 @@ public function get_eventos($elemento)
         //  if( !isset($eventos[$row->ID_SERVICIO]['servicios'][$row->ID_SERVICIO]['conceptos'][$row->ID_CONCEPTO] ) ){
         //     $eventos[$row->ID_SERVICIO]['servicios'][$row->ID_SERVICIO]['conceptos'][$row->ID_CONCEPTO] = 
         //     array(
-        //             
-        //             
-        //             
-        //             
-        //             
-        //             
-        //             
-        //             
         // }
 
 

@@ -90,7 +90,15 @@
                             
                         </div>
                     </div>
-                    <div class="col-sm-10">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <label>Tipo de pago</label>
+                            <select name="tipo_pago" id="tipo_pago" class="form-control select2" style="width: 100%">
+                                <option value="" selected="true">Seleccionar</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
                         <div class="form-group">
                             <label for="filename">Archivo a subir (solo pdf)</label>
                             <input id="input" type="file" name="userfile" class="file-loading" >
@@ -197,6 +205,8 @@
        cargar_select('#medida2','concepto/get_medidas');
        cargar_select('#medida3','concepto/get_medidas');
        cargar_select('#cta_contable','concepto/get_cuentas_contables');
+       cargar_select('#tipo_pago','concepto/get_tipos_pago');
+
 
        $('body').on('change','#proveedor',function(){
         cargar_select_servicios('#servicio','proveedor/get_servicios_proveedor', $(this).val() );

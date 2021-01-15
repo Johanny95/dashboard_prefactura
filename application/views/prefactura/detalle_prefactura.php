@@ -97,7 +97,7 @@
                                             <td> <?php echo $el->MEDIDA1 ?> </td>
                                             <td> <?php echo $el->PRECIO1 ?> </td>
                                             <td> <?php echo $el->CANTIDAD1 ?> </td>
-                                            <td> <?php echo $el->TOTAL1 ?> </td>
+                                            <td> <?php echo round($el->TOTAL1) ?> </td>
                                         </tr>
                 
                                     <?php endforeach ?>
@@ -359,12 +359,14 @@
                         i : 0;
                     };
                     suma = api
-                    .column( 8 , { page: 'current'} )
-                    .data()
-                    .reduce( function (a, b) {
+                    .column( 8 , { page: 'current'} ).data().reduce( function (a, b) {
                         $i ++;
+                        console.log('A.'+a.toString().replace('%',''));
+                        console.log('B.'+b.toString().replace('%',''));
                         return intVal(a.toString().replace('%','')) + intVal(b.toString().replace('%',''));
                     }, 0 );
+                    //console.log(suma);
+
                     $( api.column(8).footer()).html( '<p class="pull-left">$</p> '+ number_punto(suma) );
 
                     if(data.length == 0 ){
