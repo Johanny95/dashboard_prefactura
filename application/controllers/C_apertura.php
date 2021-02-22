@@ -117,12 +117,16 @@ class C_apertura extends FS_Controller {
     }
 
 
-    public function get_apertura_mes(){
+   public function get_apertura_mes(){
         $periodo = $this->input->post('periodo');
 		$data['periodo'] = $this->m_model->get_apertura_mes($periodo);
+        if(empty($data['periodo'])){
+            $data['periodo'][0]['VALOR_UF'] = '0';
+            $data['periodo'][0]['MES'] = $periodo;
+
+        }
 		echo json_encode($data);
 	}
-
 
 }
 
