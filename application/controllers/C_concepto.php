@@ -182,9 +182,9 @@ class C_concepto extends FS_Controller {
 
 			$this->form_validation->set_rules('id_concepto'			, 'Id concepto'			, 'trim|required|max_length[1000]');
 			$this->form_validation->set_rules('id_precio'			, 'Id Precio'			, 'trim|required|max_length[1000]');
-			// $this->form_validation->set_rules('medida1'				, 'Tipo medida 1'		, 'trim|required');
-			// $this->form_validation->set_rules('medida2'				, 'Tipo medida 2'		, 'trim|required');
-			// $this->form_validation->set_rules('medida3'				, 'Tipo medida 3'		, 'trim|required');
+		    $this->form_validation->set_rules('medida1'				, 'Tipo medida 1'		, 'trim|required');
+			$this->form_validation->set_rules('medida2'				, 'Tipo medida 2'		, 'trim|required');
+		    $this->form_validation->set_rules('medida3'				, 'Tipo medida 3'		, 'trim|required');
 			$this->form_validation->set_rules('cta_contable'		, 'Cuenta Contable'		, 'trim|required');
 			$this->form_validation->set_rules('precio1'				, 'Precio 1'			, 'trim|required|min_length[1]|max_length[10]');
 			$this->form_validation->set_rules('precio2'				, 'Precio 2'			, 'trim|required|min_length[1]|max_length[10]');
@@ -203,9 +203,9 @@ class C_concepto extends FS_Controller {
 						'precio1'			=> $this->input->post('precio1'),
 						'precio2'			=> $this->input->post('precio2'),
 						'precio3'			=> $this->input->post('precio3'),
-						// 'medida1'			=> $this->input->post('medida1'),
-						// 'medida2'			=> $this->input->post('medida2'),
-						// 'medida3'			=> $this->input->post('medida3'),
+						'medida1'			=> $this->input->post('medida1'),
+						'medida2'			=> $this->input->post('medida2'),
+						'medida3'			=> $this->input->post('medida3'),
 						'fecha_desde'		=> $this->input->post('fecha_desde'),
 						'usuario'			=> $this->session->usuid
 					);
